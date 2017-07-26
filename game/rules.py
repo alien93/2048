@@ -10,6 +10,7 @@ class Rules(object):
 
     def init(self):
         # create an empty matrix
+        self.board = np.zeros((4,4))
         # pick random idx
         idx1 = random.randint(0,15)
         idx2 = random.randint(0,15)
@@ -53,4 +54,3 @@ class Rules(object):
 
     def print_board(self):
         print (self.board.reshape((4,4)))
-        print ('\r')

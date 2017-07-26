@@ -1,10 +1,13 @@
 from game.rules import Rules
+from ann import neat_ann
 
 if __name__ == "__main__":
-    r = Rules()
-    r.init()
+    n = neat_ann.Neat()
+    n.run()
 
+    """
     while True:
+
         key = input()
         if (key.lower() == 'a'):
             r.left()
@@ -15,3 +18,4 @@ if __name__ == "__main__":
         elif (key.lower() == 'w'):
             r.up()
         r.print_board()
+    """

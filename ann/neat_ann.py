@@ -19,34 +19,38 @@ class Neat(object):
 
     def evaluate_genomes(self, genomes):
         for g in genomes:
-            net = nn.create_recurrent_phenotype(g)
-            #net = nn.create_feed_forward_phenotype(g)
+            # net = nn.create_recurrent_phenotype(g)
+            net = nn.create_feed_forward_phenotype(g)
             # calculate fitness function
             previous_board = np.zeros((4,4))
-            print ("evaluating...")
             self.rules.init()
+            score = 0
             while not np.array_equal(previous_board, self.rules.board.reshape((4,4))):
                 c.find_legal_moves(self.rules.board)
                 previous_board = self.rules.board.reshape((4,4))
-                output = net.activate(self.rules.board.flatten())
-                output = [round(output[0]), round(output[1])]
+                output = net.serial_activate(c.normalize_board(self.rules.board.flatten()))
+                output = [1 if (output[0] > 0) else 0,1 if output[1] > 0 else 0]
                 # print (output)
                 output = c.decode_output(self.rules.board, output)
                 if output == 'left':
-                    self.rules.left()
+                    score += self.rules.left()
                 elif output == 'right':
-                    self.rules.right()
+                    score += self.rules.right()
                 elif output == 'up':
-                    self.rules.up()
+                    score += self.rules.up()
                 elif output == 'down':
-                    self.rules.down()
-                print (output)
-                self.rules.print_board()
+                    score += self.rules.down()
+                else:
+                    break
+                # print ("Score: ", score)
+                # print (output)
+                # self.rules.print_board()
             sum_points = np.sum(self.rules.board)
             board = self.rules.board.reshape((4,4))
             sum_left_corner = board[2][0] + board[2][1] + board[3][0] + board[3][1]
-            value = sum_points + sum_left_corner
-            g.fitness = value               # / (1 + abs(value))
+            value = np.amax(self.rules.board)# + sum_left_corner
+            # value = sum_points + sum_left_corner
+            g.fitness = score               # / (1 + abs(value))
             if g.fitness > self.max_fitness:
                 self.max_fitness = g.fitness
             if sum_points > self.max_sum:
@@ -55,7 +59,7 @@ class Neat(object):
                 self.max_cell = np.amax(self.rules.board)
 
             print ("#################################################")
-            print (g.fitness)
+            print ("Fitness:", g.fitness)
             print("Maximum fitness: ", self.max_fitness)
             print("Maximum sum: ", self.max_sum)
             print("Maximum cell: ", self.max_cell)
@@ -67,7 +71,7 @@ class Neat(object):
         pop = population.Population('../ann/rnn_config')
         # Create parallel evaluator, 4 threads
         # Evaluate genomes
-        pop.run(self.evaluate_genomes, 2000)
+        pop.run(self.evaluate_genomes, 2500)
 
         print('Number of evaluations: {0}'.format(pop.total_evaluations))
 
@@ -87,7 +91,7 @@ class Neat(object):
         #winner_net = nn.create_feed_forward_phenotype(winner)
 
         #save winning net
-        with open('winner_net_left', 'wb') as f:
+        with open('winner_net', 'wb') as f:
             pickle.dump(winner, f)
 
 

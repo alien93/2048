@@ -47,36 +47,42 @@ def move_up(board):
 
 
 def sum_rows(board, side):
+    score = 0
     if (side == 'left'):
         for i in range(board.shape[0]):  # rows
             for j in range(board.shape[1]):  # cols
                 if j < board.shape[1] - 1 and board[i][j] == board[i][j + 1] and board[i][j] != 0:
                     board[i][j + 1] += board[i][j]
+                    score += 2*board[i][j]
                     board[i][j] = 0
     elif (side == 'right'):
         for i in range(board.shape[0]-1,-1,-1):  # rows
             for j in range(board.shape[1]-1,-1,-1):  # cols
                 if j < board.shape[1] - 1 and board[i][j] == board[i][j + 1] and board[i][j] != 0:
                     board[i][j + 1] += board[i][j]
+                    score += 2*board[i][j]
                     board[i][j] = 0
 
-    return board
+    return board, score
 
 def sum_columns(board, side):
+    score = 0
     if (side == 'up'):
         for i in range(board.shape[0]):
             for j in range(board.shape[1]):
                 if i < board.shape[0] - 1 and board[i][j] == board[i + 1][j]:
                     board[i][j] += board[i + 1][j]
+                    score += 2*board[i + 1][j]
                     board[i + 1][j] = 0
     elif (side == 'down'):
         for i in range(board.shape[0]-1,-1,-1):
             for j in range(board.shape[1]-1,-1,-1):
                 if i < board.shape[0] - 1 and board[i][j] == board[i + 1][j]:
                     board[i][j] += board[i + 1][j]
+                    score += 2*board[i + 1][j]
                     board[i + 1][j] = 0
 
-    return board
+    return board, score
 
 def add_tile(board):
     board = board.flatten()
@@ -92,7 +98,7 @@ def decode_output(board, output):
     legal_moves = find_legal_moves(board)
     # if all moves are illegal
     if all(v == 0 for v in legal_moves.values()):
-        return 'down'
+        return 'illegal'
     legal = []
     for direction, state in legal_moves.items():
         if state == 1:
@@ -131,33 +137,38 @@ def find_legal_moves(board):
     test_board = board.copy()
     #test left
     test_board = move_left(test_board)
-    test_board = sum_rows(test_board, 'left')
+    test_board = sum_rows(test_board, 'left')[0]
     test_board = move_left(test_board)
     if not np.array_equal(test_board, board):
         legal_moves['left'] = 1
     test_board = board.copy()
     # test right
     test_board = move_right(test_board)
-    test_board = sum_rows(test_board, 'right')
+    test_board = sum_rows(test_board, 'right')[0]
     test_board = move_right(test_board)
     if not np.array_equal(test_board, board):
         legal_moves['right'] = 1
     test_board = board.copy()
     # test up
     test_board = move_up(test_board)
-    test_board = sum_columns(test_board, 'up')
+    test_board = sum_columns(test_board, 'up')[0]
     test_board = move_up(test_board)
     if not np.array_equal(test_board, board):
         legal_moves['up'] = 1
     test_board = board.copy()
     # test down
     test_board = move_down(test_board)
-    test_board = sum_columns(test_board, 'down')
+    test_board = sum_columns(test_board, 'down')[0]
     test_board = move_down(test_board)
     if not np.array_equal(test_board, board):
         legal_moves['down'] = 1
+    # print (legal_moves)
     return legal_moves
 
-
+def normalize_board(board):
+    board[board==0] = 0.0001
+    board = np.log2(board)
+    max_val = np.max(board)
+    return board/max_val
 
 

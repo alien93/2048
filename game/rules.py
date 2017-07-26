@@ -23,34 +23,36 @@ class Rules(object):
         self.board = self.board.flatten()
         self.board[idx1] = val1
         self.board[idx2] = val2
-        # print board
-        self.print_board()
 
 
     def left(self):
         # move everything >0 to the left
         self.board = c.move_left(self.board)
-        self.board = c.sum_rows(self.board, 'left')
+        self.board, score = c.sum_rows(self.board, 'left')
         self.board = c.move_left(self.board)
         self.board = c.add_tile(self.board)
+        return score
 
     def right(self):
         self.board = c.move_right(self.board)
-        self.board = c.sum_rows(self.board, 'right')
+        self.board, score = c.sum_rows(self.board, 'right')
         self.board = c.move_right(self.board)
         self.board = c.add_tile(self.board)
+        return score
 
     def up(self):
         self.board = c.move_up(self.board)
-        self.board = c.sum_columns(self.board, 'up')
+        self.board, score = c.sum_columns(self.board, 'up')
         self.board = c.move_up(self.board)
         self.board = c.add_tile(self.board)
+        return score
 
     def down(self):
         self.board = c.move_down(self.board)
-        self.board = c.sum_columns(self.board, 'down')
+        self.board, score = c.sum_columns(self.board, 'down')
         self.board = c.move_down(self.board)
         self.board = c.add_tile(self.board)
+        return score
 
     def print_board(self):
         print (self.board.reshape((4,4)))

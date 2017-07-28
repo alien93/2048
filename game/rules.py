@@ -23,7 +23,7 @@ class Rules(object):
         self.board = self.board.flatten()
         self.board[idx1] = val1
         self.board[idx2] = val2
-
+        return self.board
 
     def left(self):
         # move everything >0 to the left

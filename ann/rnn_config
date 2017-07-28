@@ -10,16 +10,16 @@ input_nodes          = 16
 hidden_nodes         = 0
 output_nodes         = 2
 initial_connection   = fs_neat
-max_weight           = +500
-min_weight           = -500
+max_weight           = +30
+min_weight           = -30
 feedforward          = 1
-activation_functions = relu
+activation_functions = sigmoid
 weight_stdev         = 1.0
 
 [genetic]
-pop_size                = 200
+pop_size                = 100
 max_fitness_threshold   = 59999
-prob_add_conn           = 0.3
+prob_add_conn           = 0.4
 prob_add_node           = 0.3
 prob_delete_conn        = 0.05
 prob_delete_node        = 0.05
@@ -28,7 +28,7 @@ bias_mutation_power     = 0.5
 prob_mutate_response    = 0.8
 response_mutation_power = 0.5
 prob_mutate_weight      = 0.8
-prob_replace_weight     = 0.1
+prob_replace_weight     = 0.4
 weight_mutation_power   = 0.5
 prob_mutate_activation  = 0.0
 prob_toggle_link        = 0.01
@@ -45,5 +45,5 @@ species_fitness_func = mean
 max_stagnation       = 10
 
 [DefaultReproduction]
-elitism              = 2
+elitism              = 15
 survival_threshold   = 0.2
